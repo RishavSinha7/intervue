@@ -105,6 +105,7 @@ function CreatePoll({ onCreatePoll, canCreate }) {
           className="btn-primary btn-create-poll"
           onClick={() => setShowForm(true)}
           disabled={!canCreate}
+          style={{ width: '100%', maxWidth: 'none' }}
         >
           + Create New Poll
         </button>
@@ -144,28 +145,26 @@ function CreatePoll({ onCreatePoll, canCreate }) {
           </div>
         </div>
 
-        {/* Duration Selector */}
-        <div className="form-group" style={{ marginBottom: '12px' }}>
-          <label className="form-label-inline">
-            <select
-              value={duration}
-              onChange={(e) => setDuration(parseInt(e.target.value))}
-              className="select-duration"
-              style={{ fontSize: '14px', padding: '6px 30px 6px 10px' }}
-            >
-              <option value={30}>30 seconds</option>
-              <option value={45}>45 seconds</option>
-              <option value={60}>60 seconds</option>
-              <option value={90}>90 seconds</option>
-              <option value={120}>120 seconds</option>
-            </select>
-            <span className="dropdown-icon">▼</span>
-          </label>
-        </div>
-
-        {/* Options Section */}
-        <div className="form-group" style={{ marginBottom: '12px' }}>
-          <label className="form-label" style={{ fontSize: '14px', marginBottom: '8px' }}>Edit Options</label>
+        {/* Options Section with Duration Selector on same line */}
+        <div className="form-group" style={{ marginBottom: '12px', marginTop: '8px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <label className="form-label" style={{ fontSize: '14px', margin: 0 }}>Edit Options</label>
+            <label className="form-label-inline" style={{ margin: 0 }}>
+              <select
+                value={duration}
+                onChange={(e) => setDuration(parseInt(e.target.value))}
+                className="select-duration"
+                style={{ fontSize: '14px', padding: '6px 30px 6px 10px' }}
+              >
+                <option value={30}>30 seconds</option>
+                <option value={45}>45 seconds</option>
+                <option value={60}>60 seconds</option>
+                <option value={90}>90 seconds</option>
+                <option value={120}>120 seconds</option>
+              </select>
+              <span className="dropdown-icon">▼</span>
+            </label>
+          </div>
           <div className="options-header" style={{ fontSize: '12px', marginBottom: '8px' }}>
             <span className="options-label-left">Option</span>
             <span className="options-label-right">Is it Correct?</span>
@@ -223,7 +222,7 @@ function CreatePoll({ onCreatePoll, canCreate }) {
               type="button"
               onClick={handleAddOption}
               className="btn-add-more-option"
-              style={{ fontSize: '13px', padding: '6px 12px' }}
+              style={{ fontSize: '13px', padding: '6px 12px', width: 'fit-content', marginTop: '0', marginLeft: '40px' }}
             >
               + Add More option
             </button>
