@@ -14,7 +14,8 @@ const initialState = {
   isConnected: false,
   isTeacher: false,
   messages: [],
-  showChat: false
+  showChat: false,
+  kicked: false // Track if student has been kicked
 };
 
 const studentSlice = createSlice({
@@ -64,6 +65,16 @@ const studentSlice = createSlice({
     disconnect: (state) => {
       state.isConnected = false;
       state.socketId = null;
+    },
+
+    // Set kicked status
+    setKicked: (state, action) => {
+      state.kicked = action.payload;
+      if (action.payload) {
+        // When kicked, force disconnect and hide chat
+        state.isConnected = false;
+        state.showChat = false;
+      }
     }
   }
 });
@@ -76,7 +87,8 @@ export const {
   addMessage,
   toggleChat,
   clearMessages,
-  disconnect
+  disconnect,
+  setKicked
 } = studentSlice.actions;
 
 export default studentSlice.reducer;

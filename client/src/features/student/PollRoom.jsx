@@ -16,7 +16,7 @@ import {
   setPollEnded,
   setTimeRemaining
 } from '../../store/pollSlice';
-import { setSocketId, setConnected, disconnect, addMessage } from '../../store/studentSlice';
+import { setSocketId, setConnected, disconnect, addMessage, setKicked } from '../../store/studentSlice';
 import './student.css';
 
 function PollRoom({ studentName, roomId }) {
@@ -29,8 +29,7 @@ function PollRoom({ studentName, roomId }) {
     timeRemaining,
     answerFeedback
   } = useSelector(state => state.poll);
-  const { socketId } = useSelector(state => state.student);
-  const [kicked, setKicked] = useState(false);
+  const { socketId, kicked } = useSelector(state => state.student);
 
   useEffect(() => {
     // Connect and join as student with room ID
@@ -72,7 +71,7 @@ function PollRoom({ studentName, roomId }) {
     // Listen for being kicked
     socket.on('kicked', (data) => {
       alert(data.message);
-      setKicked(true);
+      dispatch(setKicked(true));
       dispatch(disconnect());
       socket.disconnect();
     });

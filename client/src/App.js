@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import TeacherDashboard from './features/teacher/TeacherDashboard';
 import StudentJoin from './features/student/StudentJoin';
 import PollRoom from './features/student/PollRoom';
@@ -14,6 +15,7 @@ import './App.css';
 
 function AppContent() {
   const location = useLocation();
+  const kicked = useSelector(state => state.student.kicked);
   // MULTI-ROOM SUPPORT: Store both student name and room ID
   const [studentName, setStudentName] = useState('');
   const [roomId, setRoomId] = useState('');
@@ -23,9 +25,9 @@ function AppContent() {
     setRoomId(room);
   };
 
-  // Show chat only on teacher and student pages
-  const showChat = location.pathname === '/teacher' || 
-                   (location.pathname === '/student' && studentName);
+  // Show chat only on teacher and student pages, and NOT for kicked students
+  const showChat = !kicked && (location.pathname === '/teacher' || 
+                   (location.pathname === '/student' && studentName));
 
   return (
     <>
