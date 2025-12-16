@@ -1,15 +1,27 @@
 /**
  * HomePage Component
  * Landing page with options to join as teacher or student
+ * MULTI-ROOM SUPPORT: Auto-redirect to student if room ID in URL
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 
 function HomePage() {
   const navigate = useNavigate();
   const [selectedRole, setSelectedRole] = useState('student');
+
+  // Auto-redirect to student page if room ID in URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const room = urlParams.get('room');
+    
+    if (room) {
+      // If there's a room ID in URL, assume student role and redirect
+      navigate('/student' + window.location.search);
+    }
+  }, [navigate]);
 
   const handleContinue = () => {
     if (selectedRole === 'student') {

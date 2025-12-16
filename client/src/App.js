@@ -14,14 +14,13 @@ import './App.css';
 
 function AppContent() {
   const location = useLocation();
-  // IDENTITY FIX: Student name is NOT persisted in localStorage
-  // Each browser tab/refresh creates a NEW student session
-  // Identity is socket-based ONLY (server-side by socket.id)
+  // MULTI-ROOM SUPPORT: Store both student name and room ID
   const [studentName, setStudentName] = useState('');
+  const [roomId, setRoomId] = useState('');
 
-  const handleStudentJoin = (name) => {
+  const handleStudentJoin = (name, room) => {
     setStudentName(name);
-    // NO localStorage - each tab must enter name separately
+    setRoomId(room);
   };
 
   // Show chat only on teacher and student pages
@@ -36,8 +35,8 @@ function AppContent() {
         <Route
           path="/student"
           element={
-            studentName ? (
-              <PollRoom studentName={studentName} />
+            studentName && roomId ? (
+              <PollRoom studentName={studentName} roomId={roomId} />
             ) : (
               <StudentJoin onJoin={handleStudentJoin} />
             )

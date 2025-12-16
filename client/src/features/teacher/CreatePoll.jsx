@@ -118,16 +118,11 @@ function CreatePoll({ onCreatePoll, canCreate }) {
   }
 
   return (
-    <div className="create-poll-form">
-      <div className="form-header">
-        <div className="brand-badge">
-          <span className="badge-icon"></span>
-          Intervue Poll
-        </div>
-        <h2>Let's Get Started</h2>
-        <p className="form-subtitle">
-          you'll have the ability to create and manage polls, ask questions, and monitor
-          your students' responses in real-time.
+    <div className="create-poll-form" style={{ padding: '16px' }}>
+      <div className="form-header" style={{ marginBottom: '16px' }}>
+        <h2 style={{ fontSize: '20px', marginBottom: '4px' }}>Create New Poll</h2>
+        <p className="form-subtitle" style={{ fontSize: '13px', color: '#666' }}>
+          Create polls and monitor your students' responses in real-time.
         </p>
       </div>
 
@@ -142,19 +137,21 @@ function CreatePoll({ onCreatePoll, canCreate }) {
               placeholder="Enter your question here..."
               className="input-textarea"
               maxLength={100}
-              rows={3}
+              rows={2}
+              style={{ fontSize: '14px', padding: '8px 12px' }}
             />
             <span className="char-counter">{question.length}/100</span>
           </div>
         </div>
 
         {/* Duration Selector */}
-        <div className="form-group">
+        <div className="form-group" style={{ marginBottom: '12px' }}>
           <label className="form-label-inline">
             <select
               value={duration}
               onChange={(e) => setDuration(parseInt(e.target.value))}
               className="select-duration"
+              style={{ fontSize: '14px', padding: '6px 30px 6px 10px' }}
             >
               <option value={30}>30 seconds</option>
               <option value={45}>45 seconds</option>
@@ -167,16 +164,16 @@ function CreatePoll({ onCreatePoll, canCreate }) {
         </div>
 
         {/* Options Section */}
-        <div className="form-group">
-          <label className="form-label">Edit Options</label>
-          <div className="options-header">
+        <div className="form-group" style={{ marginBottom: '12px' }}>
+          <label className="form-label" style={{ fontSize: '14px', marginBottom: '8px' }}>Edit Options</label>
+          <div className="options-header" style={{ fontSize: '12px', marginBottom: '8px' }}>
             <span className="options-label-left">Option</span>
             <span className="options-label-right">Is it Correct?</span>
           </div>
 
           {options.map((option, index) => (
-            <div key={index} className="option-row-with-correct">
-              <div className="option-number-circle">{index + 1}</div>
+            <div key={index} className="option-row-with-correct" style={{ marginBottom: '8px' }}>
+              <div className="option-number-circle" style={{ width: '24px', height: '24px', fontSize: '12px', lineHeight: '24px' }}>{index + 1}</div>
               <input
                 type="text"
                 value={option}
@@ -184,9 +181,10 @@ function CreatePoll({ onCreatePoll, canCreate }) {
                 placeholder="Enter options here"
                 className="input-option"
                 maxLength={100}
+                style={{ fontSize: '14px', padding: '6px 10px' }}
               />
-              <div className="correct-answer-selector">
-                <label className="radio-label">
+              <div className="correct-answer-selector" style={{ gap: '8px' }}>
+                <label className="radio-label" style={{ fontSize: '13px' }}>
                   <input
                     type="radio"
                     name="correctAnswer"
@@ -195,7 +193,7 @@ function CreatePoll({ onCreatePoll, canCreate }) {
                   />
                   <span className="radio-text">Yes</span>
                 </label>
-                <label className="radio-label">
+                <label className="radio-label" style={{ fontSize: '13px' }}>
                   <input
                     type="radio"
                     name={`incorrect-${index}`}
@@ -212,6 +210,7 @@ function CreatePoll({ onCreatePoll, canCreate }) {
                   onClick={() => handleRemoveOption(index)}
                   className="btn-remove-option"
                   title="Remove option"
+                  style={{ fontSize: '16px', width: '24px', height: '24px' }}
                 >
                   ✕
                 </button>
@@ -224,6 +223,7 @@ function CreatePoll({ onCreatePoll, canCreate }) {
               type="button"
               onClick={handleAddOption}
               className="btn-add-more-option"
+              style={{ fontSize: '13px', padding: '6px 12px' }}
             >
               + Add More option
             </button>
@@ -231,11 +231,11 @@ function CreatePoll({ onCreatePoll, canCreate }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="form-actions-bottom">
-          <button type="button" onClick={handleCancel} className="btn-cancel">
+        <div className="form-actions-bottom" style={{ marginTop: '16px', gap: '10px' }}>
+          <button type="button" onClick={handleCancel} className="btn-cancel" style={{ fontSize: '14px', padding: '8px 16px' }}>
             Cancel
           </button>
-          <button type="submit" className="btn-ask-question">
+          <button type="submit" className="btn-ask-question" style={{ fontSize: '14px', padding: '8px 16px' }}>
             + Ask a new question
           </button>
         </div>

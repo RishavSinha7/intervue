@@ -1,6 +1,7 @@
 /**
  * PollRoom Component
  * Main interface for students to view and answer polls
+ * MULTI-ROOM SUPPORT: Uses room ID from props
  */
 
 import React, { useEffect, useState } from 'react';
@@ -18,7 +19,7 @@ import {
 import { setSocketId, setConnected, disconnect, addMessage } from '../../store/studentSlice';
 import './student.css';
 
-function PollRoom({ studentName }) {
+function PollRoom({ studentName, roomId }) {
   const dispatch = useDispatch();
   const { 
     currentPoll, 
@@ -32,12 +33,11 @@ function PollRoom({ studentName }) {
   const [kicked, setKicked] = useState(false);
 
   useEffect(() => {
-    // Connect and join as student
+    // Connect and join as student with room ID
     socket.connect();
-    // FIX: Send student data as object with name and roomId
     socket.emit('join_as_student', { 
       name: studentName,
-      roomId: 'default-room'
+      roomId: roomId
     });
     dispatch(setConnected(true));
 
@@ -176,7 +176,7 @@ function PollRoom({ studentName }) {
             {!isPollActive && answerFeedback && (
               <div className={`answer-feedback ${answerFeedback.isCorrect ? 'correct' : 'incorrect'}`}>
                 <span className="feedback-icon">
-                  {answerFeedback.isCorrect ? '✓' : '✗'}
+                  {answerFeedback.isCorrect ? 'Correct' : 'Incorrect'}
                 </span>
                 <span className="feedback-text">
                   {answerFeedback.isCorrect ? 'Correct answer!' : 'Wrong answer'}
@@ -192,7 +192,6 @@ function PollRoom({ studentName }) {
             {isPollActive ? (
               <div className="waiting-results">
                 <div className="submitted-confirmation">
-                  <span className="check-icon">✓</span>
                   <span>Answer submitted!</span>
                 </div>
                 <p>Please wait for the poll to end...</p>
@@ -206,7 +205,6 @@ function PollRoom({ studentName }) {
         {!isPollActive && pollResults && !hasAnswered && (
           <div className="poll-ended-section">
             <div className="answer-feedback incorrect">
-              <span className="feedback-icon">⏱</span>
               <span className="feedback-text">Time's up! You didn't answer</span>
               {pollResults.correctOptionIndex !== undefined && pollResults.options && (
                 <span className="correct-answer-hint">

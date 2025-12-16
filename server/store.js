@@ -2,6 +2,8 @@
  * In-memory data store for the polling system (ROOM-BASED ARCHITECTURE)
  * Supports multiple teachers with isolated rooms
  * Each room maintains its own state
+ * 
+ * SECURITY: All room data is strictly isolated - no cross-room data leakage
  */
 
 const store = {
@@ -16,37 +18,48 @@ const store = {
 };
 
 /**
- * Room State Structure:
+ * Room State Structure (aligned with specification):
  * {
  *   roomId: string,
- *   teacherSocketId: string,
- *   teacherName: string,
- *   students: { socketId: { name, hasAnswered, socketRef } },
- *   currentPoll: {
- *     question, options, answers,
- *     startTime, duration, isActive,
- *     activeStudents: [socketId], // SNAPSHOT at poll start
+ *   teacher: { socketId: string, name: string },
+ *   students: Map<socketId, { name, hasAnswered }>,
+ *   activePoll: {
+ *     question: string,
+ *     options: string[],
+ *     correctOptionIndex: number,
+ *     answers: Map<socketId, optionIndex>,
+ *     timerEndsAt: timestamp,
+ *     startTime: timestamp,
+ *     duration: number,
+ *     isActive: boolean,
+ *     activeStudents: socketId[], // SNAPSHOT at poll start
  *     completionReason: null | "TIME_EXPIRED" | "ALL_ANSWERED"
  *   },
- *   pastPolls: []
+ *   pollHistory: [],
+ *   chat: []
  * }
  */
 
 /**
  * Create a new room for a teacher
+ * SECURITY: Enforces one teacher per room
  */
 function createRoom(roomId, teacherSocketId, teacherName = 'Teacher') {
   if (store.rooms[roomId]) {
     return { success: false, error: 'Room already exists' };
   }
 
+  // Initialize room with Maps as per specification
   store.rooms[roomId] = {
     roomId,
-    teacherSocketId,
-    teacherName,
-    students: {},
-    currentPoll: null,
-    pastPolls: []
+    teacher: {
+      socketId: teacherSocketId,
+      name: teacherName
+    },
+    students: new Map(), // Map<socketId, { name, hasAnswered }>
+    activePoll: null,
+    pollHistory: [],
+    chat: [] // Track chat messages per room
   };
 
   // Clear any existing session timer
@@ -67,6 +80,7 @@ function getRoom(roomId) {
 
 /**
  * Add a new student to a specific room
+ * SECURITY: Validates room exists and prevents duplicate names
  */
 function addStudent(roomId, socketId, name, socketRef) {
   const room = getRoom(roomId);
@@ -74,30 +88,37 @@ function addStudent(roomId, socketId, name, socketRef) {
     return { success: false, error: 'Room not found' };
   }
 
-  room.students[socketId] = {
+  // Check for duplicate student name in this room
+  for (const [existingSocketId, student] of room.students) {
+    if (student.name === name && existingSocketId !== socketId) {
+      return { success: false, error: 'Student name already taken in this room' };
+    }
+  }
+
+  room.students.set(socketId, {
     name,
     hasAnswered: false,
     socketRef
-  };
+  });
 
   return { success: true };
 }
 
 /**
  * Remove a student from a specific room
- * If student was in activeStudents snapshot, remove them
+ * SECURITY: If student was in activeStudents snapshot, remove them
  */
 function removeStudent(roomId, socketId) {
   const room = getRoom(roomId);
   if (!room) return { success: false };
 
-  delete room.students[socketId];
+  room.students.delete(socketId);
 
   // CRITICAL: Remove from active students snapshot if poll is active
-  if (room.currentPoll && room.currentPoll.activeStudents) {
-    const index = room.currentPoll.activeStudents.indexOf(socketId);
+  if (room.activePoll && room.activePoll.activeStudents) {
+    const index = room.activePoll.activeStudents.indexOf(socketId);
     if (index > -1) {
-      room.currentPoll.activeStudents.splice(index, 1);
+      room.activePoll.activeStudents.splice(index, 1);
     }
   }
 
@@ -111,17 +132,21 @@ function getAllStudents(roomId) {
   const room = getRoom(roomId);
   if (!room) return [];
 
-  return Object.entries(room.students).map(([socketId, data]) => ({
-    socketId,
-    name: data.name,
-    hasAnswered: data.hasAnswered
-  }));
+  const students = [];
+  for (const [socketId, data] of room.students) {
+    students.push({
+      socketId,
+      name: data.name,
+      hasAnswered: data.hasAnswered
+    });
+  }
+  return students;
 }
 
 /**
  * Create a new poll in a specific room
- * CRITICAL FIX: Capture SNAPSHOT of active students at poll start
- * UPDATED: Now supports correct answer tracking
+ * SECURITY: Capture SNAPSHOT of active students at poll start
+ * ANTI-CHEAT: Store correct answer server-side only
  */
 function createPoll(roomId, question, options, duration, correctOptionIndex) {
   const room = getRoom(roomId);
@@ -142,37 +167,38 @@ function createPoll(roomId, question, options, duration, correctOptionIndex) {
   }
   console.log('correctOptionIndex is valid:', correctOptionIndex);
 
-  // NOTE: Don't save currentPoll to history here
-  // It will be saved in endPoll() when it actually completes with all data
-
   // CRITICAL: Take SNAPSHOT of currently connected students
-  const activeStudents = Object.keys(room.students);
+  const activeStudents = Array.from(room.students.keys());
 
   // Reset all students' hasAnswered status
-  activeStudents.forEach(socketId => {
-    if (room.students[socketId]) {
-      room.students[socketId].hasAnswered = false;
-    }
-  });
+  for (const [socketId, student] of room.students) {
+    student.hasAnswered = false;
+  }
+
+  const startTime = Date.now();
+  const durationMs = duration * 1000;
 
   // Create new poll with activeStudents snapshot and correct answer
-  room.currentPoll = {
+  // Using 'activePoll' to match specification (was 'currentPoll')
+  room.activePoll = {
     question,
     options,
-    correctOptionIndex, // NEW: Store correct answer
-    answers: {}, // { socketId: optionIndex }
-    startTime: Date.now(),
-    duration: duration * 1000, // Convert to milliseconds
+    correctOptionIndex, // ANTI-CHEAT: Server-side only
+    answers: new Map(), // Map<socketId, optionIndex>
+    startTime,
+    duration: durationMs,
+    timerEndsAt: startTime + durationMs, // As per specification
     isActive: true,
     activeStudents: activeStudents, // SNAPSHOT - only these students count
     completionReason: null
   };
 
-  return { success: true, poll: room.currentPoll };
+  return { success: true, poll: room.activePoll };
 }
 
 /**
  * Submit an answer to the current poll in a room
+ * SECURITY: Validates student belongs to room and hasn't answered yet
  */
 function submitAnswer(roomId, socketId, optionIndex) {
   const room = getRoom(roomId);
@@ -180,70 +206,73 @@ function submitAnswer(roomId, socketId, optionIndex) {
     return { success: false, error: 'Room not found' };
   }
 
-  if (!room.currentPoll) {
+  if (!room.activePoll) {
     return { success: false, error: 'No active poll' };
   }
 
-  if (!room.students[socketId]) {
+  const student = room.students.get(socketId);
+  if (!student) {
     return { success: false, error: 'Student not in room' };
   }
 
-  if (room.students[socketId].hasAnswered) {
+  if (student.hasAnswered) {
     return { success: false, error: 'Already answered' };
   }
 
   // Check if poll time has expired
-  const elapsed = Date.now() - room.currentPoll.startTime;
-  if (elapsed > room.currentPoll.duration) {
+  const elapsed = Date.now() - room.activePoll.startTime;
+  if (elapsed > room.activePoll.duration) {
     return { success: false, error: 'Poll time expired' };
   }
 
-  // Record answer
-  room.currentPoll.answers[socketId] = optionIndex;
-  room.students[socketId].hasAnswered = true;
+  // Record answer using Map
+  room.activePoll.answers.set(socketId, optionIndex);
+  student.hasAnswered = true;
 
   return { success: true };
 }
 
 /**
  * Get poll results with vote counts for a room
- * UPDATED: Includes correct answer information
+ * ANTI-CHEAT: Includes correct answer information (server-side only)
  */
 function getPollResults(roomId) {
   const room = getRoom(roomId);
-  if (!room || !room.currentPoll) {
+  if (!room || !room.activePoll) {
     return null;
   }
 
-  const results = room.currentPoll.options.map(() => 0);
+  const results = room.activePoll.options.map(() => 0);
   
-  Object.values(room.currentPoll.answers).forEach(optionIndex => {
+  // Count votes from Map
+  for (const optionIndex of room.activePoll.answers.values()) {
     results[optionIndex]++;
-  });
+  }
 
   return {
-    question: room.currentPoll.question,
-    options: room.currentPoll.options,
-    correctOptionIndex: room.currentPoll.correctOptionIndex, // NEW: Include correct answer
+    question: room.activePoll.question,
+    options: room.activePoll.options,
+    correctOptionIndex: room.activePoll.correctOptionIndex,
     results,
-    totalVotes: Object.keys(room.currentPoll.answers).length,
-    totalStudents: Object.keys(room.students).length,
-    activeStudents: room.currentPoll.activeStudents.length,
-    startTime: room.currentPoll.startTime,
-    duration: room.currentPoll.duration,
-    completionReason: room.currentPoll.completionReason
+    totalVotes: room.activePoll.answers.size,
+    totalStudents: room.students.size,
+    activeStudents: room.activePoll.activeStudents.length,
+    startTime: room.activePoll.startTime,
+    duration: room.activePoll.duration,
+    timerEndsAt: room.activePoll.timerEndsAt,
+    completionReason: room.activePoll.completionReason
   };
 }
 
 /**
- * CRITICAL FIX: Check if all ACTIVE students (from snapshot) have answered
+ * SECURITY: Check if all ACTIVE students (from snapshot) have answered
  * New students joining mid-poll do NOT block completion
  */
 function allActiveStudentsAnswered(roomId) {
   const room = getRoom(roomId);
-  if (!room || !room.currentPoll) return false;
+  if (!room || !room.activePoll) return false;
 
-  const { activeStudents } = room.currentPoll;
+  const { activeStudents } = room.activePoll;
   
   // If no active students at poll start, return true (edge case)
   if (!activeStudents || activeStudents.length === 0) return true;
@@ -251,34 +280,44 @@ function allActiveStudentsAnswered(roomId) {
   // Check if ALL students in the snapshot have answered
   return activeStudents.every(socketId => {
     // If student disconnected, they don't block (already removed from snapshot)
-    if (!room.students[socketId]) return true;
-    return room.students[socketId].hasAnswered;
+    const student = room.students.get(socketId);
+    if (!student) return true;
+    return student.hasAnswered;
   });
 }
 
 /**
  * End the current poll with a reason
  * @param {string} reason - "TIME_EXPIRED" | "ALL_ANSWERED"
- * Saves poll to history when ending
+ * SECURITY: Saves poll to history when ending
  */
 function endPoll(roomId, reason) {
   const room = getRoom(roomId);
-  if (!room || !room.currentPoll) return { success: false };
+  if (!room || !room.activePoll) return { success: false };
 
-  room.currentPoll.isActive = false;
-  room.currentPoll.completionReason = reason;
-  room.currentPoll.endTime = Date.now();
+  room.activePoll.isActive = false;
+  room.activePoll.completionReason = reason;
+  room.activePoll.endTime = Date.now();
+
+  // Convert Map to object for history storage
+  const answersObj = {};
+  for (const [socketId, optionIndex] of room.activePoll.answers) {
+    answersObj[socketId] = optionIndex;
+  }
 
   // Save to poll history with complete data
-  room.pastPolls.push({ ...room.currentPoll });
+  room.pollHistory.push({
+    ...room.activePoll,
+    answers: answersObj // Store as object in history
+  });
   
-  console.log(`Poll saved to history for room ${roomId}:`, room.currentPoll.question);
+  console.log(`Poll saved to history for room ${roomId}:`, room.activePoll.question);
 
   return { success: true, reason };
 }
 
 /**
- * CRITICAL FIX: Check if a new poll can be created
+ * SECURITY: Check if a new poll can be created
  * Poll is complete if: no active poll OR poll ended (by timer or all answered)
  */
 function canCreateNewPoll(roomId) {
@@ -286,10 +325,10 @@ function canCreateNewPoll(roomId) {
   if (!room) return false;
 
   // Can create if no poll exists
-  if (!room.currentPoll) return true;
+  if (!room.activePoll) return true;
   
   // Can create if current poll is not active (already ended)
-  if (!room.currentPoll.isActive) return true;
+  if (!room.activePoll.isActive) return true;
 
   // Cannot create if poll is still active
   return false;
@@ -327,18 +366,19 @@ function cancelTeacherSessionTimeout(roomId) {
 }
 
 /**
- * Reset a room's session (called when teacher session expires)
+ * SECURITY: Reset a room's session (called when teacher session expires)
+ * Disconnects all students and clears room data
  */
 function resetSession(roomId) {
   const room = getRoom(roomId);
   if (!room) return;
 
   // Disconnect all students
-  Object.values(room.students).forEach(student => {
+  for (const student of room.students.values()) {
     if (student.socketRef) {
       student.socketRef.disconnect(true);
     }
-  });
+  }
 
   // Clear room data
   delete store.rooms[roomId];
@@ -349,26 +389,27 @@ function resetSession(roomId) {
 
 /**
  * Update teacher socket ID (for reconnection)
+ * SECURITY: Validates room exists
  */
 function updateTeacherSocket(roomId, newSocketId) {
   const room = getRoom(roomId);
   if (!room) return { success: false };
 
-  room.teacherSocketId = newSocketId;
+  room.teacher.socketId = newSocketId;
   return { success: true };
 }
 
 /**
  * Get poll history for a room
  * Returns formatted past polls with results
- * UPDATED: Includes correct answer information
+ * ANTI-CHEAT: Includes correct answer information (revealed after poll ends)
  */
 function getPollHistory(roomId) {
   const room = getRoom(roomId);
   if (!room) return [];
 
   // Format past polls with calculated results
-  return room.pastPolls.map((poll, index) => {
+  return room.pollHistory.map((poll, index) => {
     const results = poll.options.map(() => 0);
     const totalVotes = Object.keys(poll.answers || {}).length;
 
@@ -388,7 +429,7 @@ function getPollHistory(roomId) {
       id: index + 1,
       question: poll.question,
       options: poll.options,
-      correctOptionIndex: poll.correctOptionIndex, // NEW: Include correct answer
+      correctOptionIndex: poll.correctOptionIndex,
       results,
       percentages,
       totalVotes,
@@ -397,6 +438,35 @@ function getPollHistory(roomId) {
       completionReason: poll.completionReason
     };
   });
+}
+
+/**
+ * Add a chat message to a room's history
+ * SECURITY: All message metadata is server-determined
+ */
+function addChatMessage(roomId, message, senderSocketId, senderName, senderRole) {
+  const room = getRoom(roomId);
+  if (!room) return { success: false };
+
+  const chatMessage = {
+    message,
+    senderSocketId,
+    senderName,
+    senderRole,
+    timestamp: Date.now()
+  };
+
+  room.chat.push(chatMessage);
+  return { success: true, chatMessage };
+}
+
+/**
+ * Get chat history for a room
+ */
+function getChatHistory(roomId) {
+  const room = getRoom(roomId);
+  if (!room) return [];
+  return room.chat;
 }
 
 module.exports = {
@@ -416,5 +486,7 @@ module.exports = {
   cancelTeacherSessionTimeout,
   resetSession,
   updateTeacherSocket,
-  getPollHistory
+  getPollHistory,
+  addChatMessage,
+  getChatHistory
 };
