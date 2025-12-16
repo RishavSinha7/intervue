@@ -1,0 +1,217 @@
+/**
+ * Global Application Styles
+ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Global Button Styles */
+.btn-primary {
+  background: linear-gradient(135deg, #7765DA 0%, #5767D0 50%, #4F0DCE 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 13, 206, 0.3);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #F2F2F2;
+  color: #373737;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #6E6E6E;
+  color: white;
+}
+
+/* Homepage Styles */
+.homepage {
+  min-height: 100vh;
+  background: #FAFAFA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.homepage-content {
+  max-width: 900px;
+  width: 100%;
+}
+
+.intervue-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #7765DA 0%, #5767D0 50%, #4F0DCE 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0 auto 2rem;
+  display: flex;
+  justify-content: center;
+  width: fit-content;
+}
+
+.star-icon {
+  font-size: 1rem;
+}
+
+.homepage-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.homepage-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #1A1A1A;
+  font-weight: 600;
+}
+
+.homepage-header .highlight {
+  font-weight: 700;
+}
+
+.homepage-header p {
+  font-size: 1rem;
+  color: #6E6E6E;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.role-selection {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.role-card {
+  background: white;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #E0E0E0;
+}
+
+.role-card:hover {
+  border-color: #7765DA;
+}
+
+.role-card.selected {
+  border: 2px solid #7765DA;
+  background: #F8F7FF;
+}
+
+.role-card h2 {
+  color: #1A1A1A;
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.role-card p {
+  color: #6E6E6E;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.continue-button-wrapper {
+  text-align: center;
+}
+
+.btn-continue {
+  background: linear-gradient(135deg, #7765DA 0%, #5767D0 50%, #4F0DCE 100%);
+  color: white;
+  border: none;
+  padding: 0.875rem 3rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(119, 101, 218, 0.3);
+}
+
+.btn-continue:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(119, 101, 218, 0.4);
+}
+
+.btn-continue:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .homepage-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .homepage-header p {
+    font-size: 0.9rem;
+  }
+
+  .role-selection {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .role-card {
+    padding: 1.5rem;
+  }
+
+  .role-card h2 {
+    font-size: 1.25rem;
+  }
+
+  .role-card p {
+    font-size: 0.875rem;
+  }
+
+  .btn-continue {
+    padding: 0.75rem 2rem;
+  }
+}

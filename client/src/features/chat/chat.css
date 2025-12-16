@@ -1,0 +1,419 @@
+/**
+ * Chat Component Styles
+ */
+
+.chat-toggle-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7765DA 0%, #4F0DCE 100%);
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(79, 13, 206, 0.3);
+  transition: transform 0.2s;
+  z-index: 1000;
+}
+
+.chat-toggle-btn:hover {
+  transform: scale(1.1);
+}
+
+.chat-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #4F0DCE;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.chat-popup {
+  position: fixed;
+  bottom: 100px;
+  right: 2rem;
+  width: 350px;
+  height: 500px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(79, 13, 206, 0.2);
+  display: flex;
+  flex-direction: column;
+  z-index: 999;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  background: linear-gradient(135deg, #7765DA 0%, #4F0DCE 100%);
+  color: white;
+  border-radius: 12px 12px 0 0;
+}
+
+/* Chat Tabs */
+.chat-tabs {
+  display: flex;
+  flex: 1;
+}
+
+.chat-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-bottom: 3px solid transparent;
+}
+
+.chat-tab:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.chat-tab.active {
+  color: white;
+  border-bottom: 3px solid white;
+}
+
+.chat-close-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 1rem 1.5rem;
+  width: auto;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.chat-close-btn:hover {
+  opacity: 0.8;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: #F2F2F2;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: #7765DA;
+  border-radius: 3px;
+}
+
+.no-messages {
+  text-align: center;
+  color: #6E6E6E;
+  margin-top: 2rem;
+}
+
+.chat-message {
+  display: flex;
+  flex-direction: column;
+  max-width: 80%;
+  animation: messageIn 0.2s ease;
+}
+
+@keyframes messageIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.own-message {
+  align-self: flex-end;
+}
+
+.other-message {
+  align-self: flex-start;
+}
+
+/* IDENTITY FIX: Teacher messages - purple bubble on right */
+.teacher-message .message-text {
+  background: linear-gradient(135deg, #7765DA 0%, #4F0DCE 100%);
+  color: white;
+  border-radius: 8px 8px 0 8px;
+}
+
+/* IDENTITY FIX: Student messages - gray bubble on left */
+.student-message .message-text {
+  background: #F2F2F2;
+  color: #373737;
+  border-radius: 8px 8px 8px 0;
+}
+
+.message-sender {
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  color: #6E6E6E;
+}
+
+.own-message .message-sender {
+  text-align: right;
+}
+
+.message-text {
+  padding: 0.75rem;
+  border-radius: 8px;
+  word-wrap: break-word;
+}
+
+.message-time {
+  font-size: 0.7rem;
+  color: #6E6E6E;
+  margin-top: 0.25rem;
+}
+
+.own-message .message-time {
+  text-align: right;
+}
+
+.chat-input-form {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-top: 1px solid #F2F2F2;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px solid #F2F2F2;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: border-color 0.3s;
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: #7765DA;
+}
+
+.chat-send-btn {
+  background: linear-gradient(135deg, #7765DA 0%, #4F0DCE 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.chat-send-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.chat-send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Participants Tab Styles */
+.participants-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.participants-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #F2F2F2;
+  background: white;
+}
+
+.participants-count {
+  color: #373737;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.participants-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+
+.participants-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.participants-list::-webkit-scrollbar-track {
+  background: #F2F2F2;
+}
+
+.participants-list::-webkit-scrollbar-thumb {
+  background: #7765DA;
+  border-radius: 3px;
+}
+
+.no-participants {
+  text-align: center;
+  color: #6E6E6E;
+  margin-top: 2rem;
+  padding: 1rem;
+}
+
+.participant-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid #F2F2F2;
+  transition: background-color 0.2s;
+  animation: fadeIn 0.3s ease;
+}
+
+.participant-row:hover {
+  background-color: #F2F2F2;
+}
+
+.participant-row:last-child {
+  border-bottom: none;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.participant-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+/* IDENTITY FIX: Role badge for participants */
+.participant-role-badge {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.participant-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.participant-name {
+  color: #373737;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.participant-role-label {
+  color: #6E6E6E;
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+/* REUSED DESIGN: Button styling matches "Connected Students" kick-out button */
+.btn-kick-out {
+  background: transparent;
+  border: none;
+  color: #7765DA;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.4rem 0.75rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.btn-kick-out:hover {
+  background: #7765DA;
+  color: white;
+}
+
+.btn-kick-out:active {
+  transform: scale(0.95);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .chat-popup {
+    width: calc(100% - 2rem);
+    right: 1rem;
+    bottom: 80px;
+  }
+
+  .chat-toggle-btn {
+    bottom: 1rem;
+    right: 1rem;
+  }
+
+  .chat-tab {
+    font-size: 0.9rem;
+    padding: 0.875rem 1rem;
+  }
+
+  .participant-row {
+    padding: 0.75rem 1rem;
+  }
+
+  .participant-name {
+    font-size: 0.9rem;
+  }
+
+  .btn-kick-out {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.65rem;
+  }
+}
