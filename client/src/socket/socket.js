@@ -1,28 +1,21 @@
-/**
- * Socket.io client configuration
- * Manages real-time connection to the server
- */
+import { io } from "socket.io-client";
 
-import { io } from 'socket.io-client';
+const SOCKET_URL =
+  process.env.REACT_APP_SOCKET_URL || "http://localhost:4000";
 
-// Use Vite environment variable with fallback for local development
-const SOCKET_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
-
-// Create socket instance
 const socket = io(SOCKET_URL, {
-  autoConnect: false, // Don't connect immediately
+  autoConnect: false,
   reconnection: true,
   reconnectionDelay: 1000,
   reconnectionAttempts: 5
 });
 
-// Debug logging for connection events
-socket.on('connect', () => {
-  console.log('Socket connected to server:', SOCKET_URL);
+socket.on("connect", () => {
+  console.log("Socket connected:", socket.id);
 });
 
-socket.on('disconnect', () => {
-  console.log('Socket disconnected from server');
+socket.on("disconnect", () => {
+  console.log("Socket disconnected");
 });
 
 export default socket;
