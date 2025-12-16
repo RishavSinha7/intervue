@@ -131,7 +131,6 @@ function TeacherDashboard() {
             onClick={() => setShowHistory(true)}
             title="View poll history"
           >
-            <span className="history-icon">👁</span>
             View Poll History
           </button>
         </div>

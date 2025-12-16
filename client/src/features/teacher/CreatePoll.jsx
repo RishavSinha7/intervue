@@ -121,7 +121,7 @@ function CreatePoll({ onCreatePoll, canCreate }) {
     <div className="create-poll-form">
       <div className="form-header">
         <div className="brand-badge">
-          <span className="badge-icon">✨</span>
+          <span className="badge-icon"></span>
           Intervue Poll
         </div>
         <h2>Let's Get Started</h2>
