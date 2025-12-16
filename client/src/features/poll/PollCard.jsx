@@ -4,9 +4,10 @@
  */
 
 import React, { useState } from 'react';
+import Timer from './Timer';
 import './poll.css';
 
-function PollCard({ poll, onSubmit, disabled }) {
+function PollCard({ poll, onSubmit, disabled, timeRemaining, duration, startTime }) {
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleSubmit = () => {
@@ -20,12 +21,20 @@ function PollCard({ poll, onSubmit, disabled }) {
 
   return (
     <div className="poll-card">
-      <div className="poll-card-header">
-        <h3 className="poll-card-title">Question 1</h3>
+      <div className="poll-header-with-timer">
+        <h3 className="poll-question-number">Question 1</h3>
+        <Timer 
+          duration={duration} 
+          startTime={startTime}
+          timeRemaining={timeRemaining}
+        />
+      </div>
+      
+      <div className="poll-question-box">
+        <h2 className="poll-question">{poll.question}</h2>
       </div>
 
       <div className="poll-card-content">
-        <h2 className="poll-question">{poll.question}</h2>
         
         <div className="poll-options">
           {poll.options.map((option, index) => (

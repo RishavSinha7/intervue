@@ -28,20 +28,21 @@ function PollResults({ results, isTeacher }) {
           const isCorrectOption = correctOptionIndex !== undefined && index === correctOptionIndex;
 
           return (
-            <div key={index} className={`result-item ${isCorrectOption ? 'correct-option' : ''}`} style={{ marginBottom: '8px' }}>
-              <div className="result-header" style={{ marginBottom: '4px' }}>
-                <span className="result-option" style={{ fontSize: '14px', gap: '8px' }}>
-                  {option}
-                  {isCorrectOption && <span className="correct-badge" style={{ fontSize: '11px', padding: '2px 8px' }}>Correct Answer</span>}
-                </span>
-                <span className="result-votes" style={{ fontSize: '13px' }}>{votes} votes ({percentage}%)</span>
+            <div key={index} className="result-item-row" style={{ marginBottom: '8px' }}>
+              <div className="result-number-circle" style={{ 
+                width: '32px', 
+                height: '32px', 
+                fontSize: '14px',
+                lineHeight: '32px'
+              }}>
+                {index + 1}
               </div>
-              <div className="result-bar-container" style={{ height: '20px' }}>
-                <div
-                  className={`result-bar ${isCorrectOption ? 'correct-bar' : ''}`}
-                  style={{ width: `${percentage}%` }}
-                ></div>
+              <div className="result-bar-wrapper" style={{ flex: 1 }}>
+                <div className="result-bar-fill" style={{ width: `${percentage}%` }}>
+                  <span className="result-option-text">{option}</span>
+                </div>
               </div>
+              <span className="result-percentage">{percentage}%</span>
             </div>
           );
         })}

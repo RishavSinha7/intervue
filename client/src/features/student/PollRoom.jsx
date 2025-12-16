@@ -157,15 +157,13 @@ function PollRoom({ studentName, roomId }) {
 
         {isPollActive && currentPoll && !hasAnswered && (
           <div className="poll-section">
-            <Timer 
-              duration={currentPoll.duration} 
-              startTime={currentPoll.startTime}
-              timeRemaining={timeRemaining}
-            />
             <PollCard
               poll={currentPoll}
               onSubmit={handleSubmitAnswer}
               disabled={timeRemaining === 0}
+              timeRemaining={timeRemaining}
+              duration={currentPoll.duration}
+              startTime={currentPoll.startTime}
             />
           </div>
         )}
