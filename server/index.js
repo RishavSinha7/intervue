@@ -14,23 +14,28 @@ const app = express();
 const server = http.createServer(app);
 
 // Configure Socket.io with CORS
-// RENDER DEPLOYMENT: Dynamically allows origin from environment variable
-// In production, CORS_ORIGIN should be set to your frontend URL (e.g., https://yourapp.vercel.app)
-// Multiple origins can be supported by setting CORS_ORIGIN as comma-separated values
+// Environment-based CORS allows dynamic origin configuration for multiple deployments
+// Set CLIENT_ORIGIN as comma-separated URLs (e.g., "http://localhost:3000,https://yourapp.vercel.app")
+const allowedOrigins = process.env.CLIENT_ORIGIN
+  ? process.env.CLIENT_ORIGIN.split(',').map(origin => origin.trim())
+  : ["http://localhost:3000"];
+
 const io = new Server(server, {
   cors: {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-    methods: ['GET', 'POST'],
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
     credentials: true
   }
 });
 
+
 // Middleware
 // RENDER DEPLOYMENT: Enable CORS for REST endpoints (if any are added in future)
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  origin: allowedOrigins,
   credentials: true
 }));
+
 app.use(express.json());
 
 // Health check endpoint
