@@ -49,7 +49,7 @@ function HomePage() {
             onClick={() => setSelectedRole('student')}
           >
             <h2>I'm a Student</h2>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+            <p>Join a poll room and participate in live polls created by your teacher.</p>
           </div>
 
           <div 
@@ -57,7 +57,7 @@ function HomePage() {
             onClick={() => setSelectedRole('teacher')}
           >
             <h2>I'm a Teacher</h2>
-            <p>Submit answers and view live poll results in real-time.</p>
+            <p>Create polls, track responses, and view live results in real-time.</p>
           </div>
         </div>
 
