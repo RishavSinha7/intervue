@@ -39,9 +39,9 @@ function Timer({ duration, startTime, timeRemaining }) {
   };
 
   return (
-    <span className={`timer-compact ${getTimerClass()}`}>
+    <div className={`timer-compact ${getTimerClass()}`}>
       {formatTime(displayTime)}
-    </span>
+    </div>
   );
 }
 

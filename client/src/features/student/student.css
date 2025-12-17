@@ -361,19 +361,291 @@
   color: #6E6E6E;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+/* Responsive student interface design for all screen sizes */
+
+/* Mobile devices (≤ 480px) */
+@media (max-width: 480px) {
+  /* Student Join Screen */
+  .student-join-container {
+    padding: 1rem;
+  }
+
+  .join-card {
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+
+  .join-card .intervue-badge {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    margin: 0 auto 1.5rem;
+  }
+
+  .join-card .star-icon {
+    font-size: 0.9rem;
+  }
+
+  .join-header {
+    margin-bottom: 2rem;
+  }
+
+  .join-header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .join-header p {
+    font-size: 0.85rem;
+    padding: 0 0.25rem;
+  }
+
+  .join-form {
+    gap: 1.25rem;
+  }
+
+  .input-label {
+    font-size: 0.85rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .input-large {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  .join-card .btn-continue {
+    padding: 0.8rem 2rem;
+    font-size: 0.95rem;
+  }
+
+  .error-text {
+    font-size: 0.8rem;
+  }
+
+  .join-footer {
+    margin-top: 1.5rem;
+  }
+
+  .info-text {
+    font-size: 0.8rem;
+  }
+
+  /* Student Poll Room */
   .student-room {
     padding: 1rem;
   }
 
+  .room-header {
+    margin-bottom: 1.5rem;
+  }
+
   .student-info-header {
     flex-direction: column;
-    gap: 1rem;
-    text-align: center;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 6px;
+  }
+
+  .student-info-header h2 {
+    font-size: 1.15rem;
+  }
+
+  .room-content {
+    max-width: 100%;
+  }
+
+  /* Waiting State */
+  .waiting-message {
+    padding: 2.5rem 1.25rem;
+    border-radius: 8px;
+  }
+
+  .waiting-message .intervue-badge {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .waiting-message .star-icon {
+    font-size: 0.9rem;
+  }
+
+  .waiting-icon {
+    font-size: 3rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .waiting-message h3 {
+    font-size: 1.35rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .waiting-message p {
+    font-size: 0.95rem;
+  }
+
+  /* Poll Section */
+  .poll-section {
+    gap: 1.25rem;
+  }
+
+  /* Submitted Message */
+  .submitted-message {
+    padding: 0.875rem;
+    border-radius: 6px;
+    gap: 0.65rem;
+    font-size: 0.95rem;
+  }
+
+  .answer-feedback {
+    padding: 1rem;
+    border-radius: 8px;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .answer-feedback .feedback-icon {
+    font-size: 1.5rem;
+  }
+
+  .answer-feedback .feedback-text {
+    font-size: 1rem;
+  }
+
+  .answer-feedback .correct-answer-hint {
+    font-size: 0.85rem;
+  }
+
+  .check-icon {
+    font-size: 1.3rem;
+  }
+
+  .waiting-results {
+    padding: 1.5rem;
+    border-radius: 6px;
+    gap: 0.75rem;
+  }
+
+  .submitted-confirmation {
+    gap: 0.4rem;
+    padding: 0.875rem;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+
+  .submitted-confirmation .check-icon {
+    font-size: 1.3rem;
+  }
+
+  /* Poll Ended */
+  .poll-ended-section {
+    gap: 1.25rem;
+  }
+
+  .poll-ended-message {
+    padding: 0.875rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+
+  /* Kicked State */
+  .kicked-message {
+    padding: 2.5rem 1.5rem;
+    border-radius: 8px;
+    margin: 2rem auto;
+    max-width: 100%;
+  }
+
+  .kicked-message h2 {
+    margin-bottom: 0.75rem;
+    font-size: 1.35rem;
+  }
+
+  .kicked-message p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Tablet devices (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .student-join-container {
+    padding: 1.5rem;
   }
 
   .join-card {
-    padding: 2rem;
+    padding: 2.25rem;
+    max-width: 520px;
+  }
+
+  .join-header h1 {
+    font-size: 2rem;
+  }
+
+  .join-header p {
+    font-size: 0.9rem;
+  }
+
+  .input-large {
+    padding: 0.8rem 0.95rem;
+  }
+
+  .join-card .btn-continue {
+    padding: 0.85rem 2.5rem;
+  }
+
+  .student-room {
+    padding: 1.5rem;
+  }
+
+  .student-info-header {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1.25rem;
+  }
+
+  .student-info-header h2 {
+    font-size: 1.35rem;
+  }
+
+  .waiting-message {
+    padding: 3.5rem 1.75rem;
+  }
+
+  .waiting-message h3 {
+    font-size: 1.65rem;
+  }
+
+  .waiting-message p {
+    font-size: 1.05rem;
+  }
+
+  .submitted-confirmation {
+    font-size: 1.05rem;
+  }
+
+  .kicked-message {
+    padding: 3.5rem 2rem;
+    margin: 3rem auto;
+  }
+
+  .kicked-message h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Laptop devices (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .join-card {
+    padding: 2.75rem;
+    max-width: 540px;
+  }
+
+  .student-room {
+    padding: 1.75rem;
+  }
+
+  .room-content {
+    max-width: 750px;
   }
 }

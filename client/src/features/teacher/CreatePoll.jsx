@@ -159,8 +159,6 @@ function CreatePoll({ onCreatePoll, canCreate }) {
                 <option value={30}>30 seconds</option>
                 <option value={45}>45 seconds</option>
                 <option value={60}>60 seconds</option>
-                <option value={90}>90 seconds</option>
-                <option value={120}>120 seconds</option>
               </select>
               <span className="dropdown-icon">▼</span>
             </label>

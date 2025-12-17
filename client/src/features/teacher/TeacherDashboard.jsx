@@ -10,6 +10,7 @@ import socket from '../../socket/socket';
 import CreatePoll from './CreatePoll';
 import PollResults from '../poll/PollResults';
 import PollHistory from '../poll/PollHistory';
+import Timer from '../poll/Timer';
 import {
   setPollResults,
   setStudents,
@@ -27,6 +28,7 @@ function TeacherDashboard() {
   const [showHistory, setShowHistory] = useState(false);
   const [roomId, setRoomId] = useState(null);
   const [isJoined, setIsJoined] = useState(false);
+  const [showPollEnded, setShowPollEnded] = useState(false);
 
   // Extract or generate room ID from URL on mount
   useEffect(() => {
@@ -72,6 +74,7 @@ function TeacherDashboard() {
     socket.on('poll_created', (results) => {
       dispatch(setPollResults(results));
       setCanCreatePoll(false);
+      setShowPollEnded(false);
     });
 
     // Listen for live results updates
@@ -83,6 +86,7 @@ function TeacherDashboard() {
     socket.on('poll_ended', (results) => {
       dispatch(setPollEnded(results));
       setCanCreatePoll(true);
+      setShowPollEnded(true);
     });
 
     // Listen for student joined
@@ -164,24 +168,24 @@ function TeacherDashboard() {
         <h1>Teacher Dashboard</h1>
         <div className="room-info" style={{ 
           margin: '10px 0', 
-          padding: '12px 16px', 
+          padding: '10px 14px', 
           background: '#f8f9fa',
-          borderRadius: '8px',
+          borderRadius: '6px',
           border: '1px solid #e0e0e0',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '20px'
+          gap: '16px'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <div>
-              <span style={{ fontSize: '11px', color: '#666', textTransform: 'uppercase', fontWeight: '600' }}>Room Code</span>
+              <span style={{ fontSize: '10px', color: '#666', textTransform: 'uppercase', fontWeight: '600', letterSpacing: '0.5px' }}>Room Code</span>
               <div style={{ 
-                fontSize: '18px', 
+                fontSize: '16px', 
                 fontWeight: 'bold',
                 fontFamily: 'monospace',
                 color: '#667eea',
-                letterSpacing: '2px',
+                letterSpacing: '1.5px',
                 marginTop: '2px'
               }}>{roomId}</div>
             </div>
@@ -191,20 +195,20 @@ function TeacherDashboard() {
                 alert('Room code copied!');
               }}
               style={{ 
-                padding: '6px 14px',
+                padding: '5px 12px',
                 background: '#667eea',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
                 cursor: 'pointer',
-                fontSize: '13px',
+                fontSize: '12px',
                 fontWeight: '500'
               }}
             >
-              Copy Code
+              Copy
             </button>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, maxWidth: '500px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, maxWidth: '450px' }}>
             <input 
               type="text" 
               value={studentLink} 
@@ -212,9 +216,9 @@ function TeacherDashboard() {
               onClick={(e) => e.target.select()}
               style={{ 
                 flex: 1,
-                padding: '6px 10px', 
+                padding: '5px 8px', 
                 fontFamily: 'monospace',
-                fontSize: '11px',
+                fontSize: '10px',
                 border: '1px solid #ddd',
                 borderRadius: '4px',
                 background: 'white',
@@ -227,13 +231,13 @@ function TeacherDashboard() {
                 alert('Link copied!');
               }}
               style={{ 
-                padding: '6px 14px',
+                padding: '5px 12px',
                 background: 'white',
                 color: '#667eea',
                 border: '1px solid #667eea',
                 borderRadius: '4px',
                 cursor: 'pointer',
-                fontSize: '13px',
+                fontSize: '12px',
                 fontWeight: '500'
               }}
             >
@@ -253,15 +257,43 @@ function TeacherDashboard() {
       </div>
 
       <div className="dashboard-content">
-        <div className="full-width-panel" style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
-          <div style={{ flex: '0 0 auto', width: '600px' }}>
+        <div className="dashboard-grid">
+          <div className="left-panel">
             <CreatePoll onCreatePoll={handleCreatePoll} canCreate={canCreatePoll} />
           </div>
           
           {pollResults && (
-            <div className="results-section" style={{ flex: '0 0 auto', width: '500px' }}>
-              <h2 style={{ fontSize: '18px', marginBottom: '12px' }}>Poll Results</h2>
-              <PollResults results={pollResults} isTeacher={true} />
+            <div className="right-panel">
+              <div className="results-section">
+                <h2 style={{ fontSize: '16px', marginBottom: '12px', fontWeight: '600', color: '#373737' }}>
+                  {isPollActive ? 'Live Poll Results' : 'Final Poll Results'}
+                </h2>
+                {isPollActive && pollResults.duration && (
+                  <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center' }}>
+                    <Timer 
+                      duration={pollResults.duration} 
+                      startTime={pollResults.startTime}
+                      timeRemaining={pollResults.timeRemaining}
+                    />
+                  </div>
+                )}
+                {showPollEnded && (
+                  <div style={{ 
+                    marginBottom: '16px', 
+                    padding: '10px 16px', 
+                    background: '#FEF3C7', 
+                    border: '1px solid #FCD34D',
+                    borderRadius: '6px',
+                    textAlign: 'center',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#92400E'
+                  }}>
+                    ⏱️ Poll Ended
+                  </div>
+                )}
+                <PollResults results={pollResults} isTeacher={true} />
+              </div>
             </div>
           )}
         </div>

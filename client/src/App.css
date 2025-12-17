@@ -185,13 +185,35 @@ body {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+
+/* Mobile-first approach: Mobile devices (≤ 480px) */
+@media (max-width: 480px) {
+  .homepage {
+    padding: 1rem;
+  }
+
+  .homepage-content {
+    max-width: 100%;
+  }
+
+  .intervue-badge {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    margin: 0 auto 1.5rem;
+  }
+
+  .homepage-header {
+    margin-bottom: 2rem;
+  }
+
   .homepage-header h1 {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
+    line-height: 1.3;
   }
 
   .homepage-header p {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    padding: 0 0.5rem;
   }
 
   .role-selection {
@@ -200,18 +222,86 @@ body {
   }
 
   .role-card {
-    padding: 1.5rem;
+    padding: 1.25rem 1rem;
   }
 
   .role-card h2 {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
   }
 
   .role-card p {
-    font-size: 0.875rem;
+    font-size: 0.85rem;
   }
 
   .btn-continue {
     padding: 0.75rem 2rem;
+    font-size: 0.95rem;
+    width: 100%;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Tablet devices (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .homepage {
+    padding: 1.5rem;
+  }
+
+  .homepage-header h1 {
+    font-size: 2rem;
+  }
+
+  .homepage-header p {
+    font-size: 0.95rem;
+  }
+
+  .role-selection {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .role-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .role-card h2 {
+    font-size: 1.35rem;
+  }
+
+  .role-card p {
+    font-size: 0.9rem;
+  }
+
+  .btn-continue {
+    padding: 0.8rem 2.5rem;
+    width: auto;
+  }
+}
+
+/* Laptop devices (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .homepage {
+    padding: 1.5rem;
+  }
+
+  .homepage-content {
+    max-width: 800px;
+  }
+
+  .homepage-header h1 {
+    font-size: 2.25rem;
+  }
+
+  .role-selection {
+    gap: 1.25rem;
+  }
+
+  .role-card {
+    padding: 2.25rem 1.75rem;
   }
 }

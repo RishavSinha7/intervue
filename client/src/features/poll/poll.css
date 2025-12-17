@@ -51,6 +51,32 @@
   align-items: center;
 }
 
+/* Timer Display - Compact */
+.timer-compact {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid #E5E7EB;
+  font-size: 1.125rem;
+  font-weight: 600;
+  font-family: 'Courier New', Courier, monospace;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.timer-compact.timer-normal {
+  color: #10B981;
+}
+
+.timer-compact.timer-warning {
+  color: #F59E0B;
+}
+
+.timer-compact.timer-critical {
+  color: #EF4444;
+}
+
+/* Legacy compact timer (keep for backward compatibility) */
 .timer-compact {
   font-size: 1.1rem;
   font-weight: 700;
@@ -398,19 +424,268 @@
   50% { opacity: 0.5; }
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .poll-card,
-  .poll-results {
-    padding: 1.5rem;
+/* Responsive poll design for all screen sizes */
+
+/* Mobile devices (≤ 480px) */
+@media (max-width: 480px) {
+  /* Compact timer responsive */
+  .timer-compact {
+    padding: 0.4rem 0.75rem;
+    font-size: 1rem;
+    border-radius: 6px;
   }
 
-  .poll-question,
+  /* Poll Card */
+  .poll-card {
+    border-radius: 8px;
+  }
+
+  .poll-header-with-timer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 1.25rem;
+    gap: 0.75rem;
+  }
+
+  .poll-question-number {
+    font-size: 1rem;
+  }
+
+  .poll-question-box {
+    padding: 0.875rem 1.25rem;
+  }
+
+  .poll-card-header {
+    padding: 1rem 1.25rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .poll-card-title {
+    font-size: 1rem;
+  }
+
+  .timer-compact {
+    font-size: 1rem;
+    padding: 0.35rem 0.7rem;
+  }
+
+  .poll-card-content {
+    padding: 1.25rem;
+  }
+
+  .poll-question {
+    font-size: 0.95rem;
+  }
+
+  .poll-options {
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .poll-option {
+    gap: 1rem;
+    padding: 0.9rem 1.25rem;
+  }
+
+  .option-radio {
+    width: 20px;
+    height: 20px;
+  }
+
+  .radio-dot {
+    width: 9px;
+    height: 9px;
+  }
+
+  .option-text {
+    font-size: 0.95rem;
+  }
+
+  .btn-submit {
+    padding: 0.75rem 2rem;
+    font-size: 0.95rem;
+    width: 100%;
+  }
+
+  /* Poll Results */
+  .poll-results {
+    padding: 1.25rem;
+    border-radius: 8px;
+  }
+
   .results-question {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .results-stats {
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .results-list {
+    gap: 1.25rem;
+  }
+
+  .result-item-row {
+    gap: 0.5rem;
+  }
+
+  .result-number-circle {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+
+  .result-bar-wrapper {
+    height: 32px;
+  }
+
+  .result-bar-fill {
+    padding-left: 0.75rem;
+  }
+
+  .result-option-text {
+    font-size: 0.85rem;
+  }
+
+  .result-percentage {
+    font-size: 0.85rem;
+    min-width: 40px;
+  }
+
+  .result-item {
+    gap: 0.4rem;
+  }
+
+  .result-item.correct-option {
+    padding: 0.65rem;
+  }
+
+  .result-option {
+    font-size: 0.95rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .correct-badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .result-votes {
+    font-size: 0.85rem;
+  }
+
+  .result-bar-container {
+    height: 28px;
+  }
+
+  .no-results {
+    padding: 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  /* Timer Component */
+  .timer-container {
+    padding: 1.25rem;
+    border-radius: 8px;
+  }
+
+  .timer-display {
+    margin-bottom: 0.75rem;
+  }
+
+  .timer-label {
+    font-size: 0.85rem;
   }
 
   .timer-value {
     font-size: 1.3rem;
+  }
+
+  .timer-bar-container {
+    height: 6px;
+  }
+}
+
+/* Tablet devices (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  /* Compact timer responsive */
+  .timer-compact {
+    padding: 0.45rem 0.875rem;
+    font-size: 1.0625rem;
+  }
+
+  .poll-header-with-timer {
+    padding: 1.1rem 2rem;
+  }
+
+  .poll-question-box {
+    padding: 0.9rem 2rem;
+  }
+
+  .poll-card-content {
+    padding: 1.5rem 2rem;
+  }
+
+  .poll-question {
+    font-size: 0.98rem;
+  }
+
+  .poll-options {
+    gap: 1.1rem;
+    margin-bottom: 2rem;
+  }
+
+  .poll-option {
+    padding: 1rem 1.35rem;
+  }
+
+  .btn-submit {
+    padding: 0.75rem 2.5rem;
+    font-size: 0.98rem;
+  }
+
+  .poll-results {
+    padding: 1.5rem;
+  }
+
+  .results-question {
+    font-size: 1.2rem;
+  }
+
+  .results-stats {
+    font-size: 0.9rem;
+  }
+
+  .timer-value {
+    font-size: 1.4rem;
+  }
+
+  .timer-label {
+    font-size: 0.9rem;
+  }
+}
+
+/* Laptop devices (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .poll-header-with-timer {
+    padding: 1.15rem 2.5rem;
+  }
+
+  .poll-question-box {
+    padding: 0.95rem 2.5rem;
+  }
+
+  .poll-card-content {
+    padding: 1.75rem 2.5rem;
+  }
+
+  .poll-results {
+    padding: 1.75rem;
   }
 }

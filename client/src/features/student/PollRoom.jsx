@@ -104,7 +104,7 @@ function PollRoom({ studentName, roomId }) {
 
   // Timer countdown effect
   useEffect(() => {
-    if (isPollActive && currentPoll && !hasAnswered) {
+    if (isPollActive && currentPoll) {
       const interval = setInterval(() => {
         const elapsed = Date.now() - currentPoll.startTime;
         const remaining = Math.max(0, currentPoll.duration - elapsed);
@@ -118,7 +118,7 @@ function PollRoom({ studentName, roomId }) {
 
       return () => clearInterval(interval);
     }
-  }, [isPollActive, currentPoll, hasAnswered, dispatch]);
+  }, [isPollActive, currentPoll, dispatch]);
 
   const handleSubmitAnswer = (optionIndex) => {
     socket.emit('submit_answer', optionIndex);
@@ -169,6 +169,17 @@ function PollRoom({ studentName, roomId }) {
 
         {hasAnswered && (
           <div className="results-section">
+            {/* Show timer while poll is still active */}
+            {isPollActive && currentPoll && (
+              <div style={{ marginBottom: '1.5rem' }}>
+                <Timer 
+                  timeRemaining={timeRemaining}
+                  duration={currentPoll.duration}
+                  startTime={currentPoll.startTime}
+                />
+              </div>
+            )}
+            
             {/* ANTI-CHEAT: Show feedback ONLY after poll ends */}
             {!isPollActive && answerFeedback && (
               <div className={`answer-feedback ${answerFeedback.isCorrect ? 'correct' : 'incorrect'}`}>
